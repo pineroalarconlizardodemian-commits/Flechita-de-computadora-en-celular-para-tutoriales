@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:   # permite lanzarlo manualmente desde GitHub
+  workflow_dispatch:
 
 jobs:
   build:
@@ -24,21 +24,12 @@ jobs:
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Cache de Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Dar permisos al wrapper
-        run: chmod +x gradlew
+      # --- ESTE ES EL CAMBIO CLAVE ---
+      - name: Configurar Gradle (sin wrapper)
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Compilar APK (debug)
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Subir APK como artefacto
         uses: actions/upload-artifact@v4
