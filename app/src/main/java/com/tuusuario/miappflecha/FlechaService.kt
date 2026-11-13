@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
@@ -56,7 +57,9 @@ class FlechaService : Service() {
     private fun crearFlecha() {
         flechaView = ImageView(this).apply {
             setImageResource(R.drawable.ic_flecha_raton)
-            layoutParams = ViewGroup.LayoutParams(150, 150) // tamaño en px
+            // Tamaño de la flecha (puedes hacerla más grande si quieres)
+            layoutParams = ViewGroup.LayoutParams(150, 150)
+            setBackgroundColor(Color.TRANSPARENT) // <-- Evita que el cuadro invisible estorbe
 
             setOnTouchListener { _, event ->
                 when (event.action) {
@@ -68,14 +71,10 @@ class FlechaService : Service() {
                         true
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        val screenW = resources.displayMetrics.widthPixels
-                        val screenH = resources.displayMetrics.heightPixels
-
-                        params.x = (initialX + (event.rawX - touchX).toInt())
-                            .coerceIn(0, screenW - width)
-                        params.y = (initialY + (event.rawY - touchY).toInt())
-                            .coerceIn(0, screenH - height)
-
+                        // Movimiento libre por toda la pantalla (sin límites)
+                        params.x = initialX + (event.rawX - touchX).toInt()
+                        params.y = initialY + (event.rawY - touchY).toInt()
+                        
                         windowManager.updateViewLayout(flechaView, params)
                         true
                     }
@@ -95,7 +94,7 @@ class FlechaService : Service() {
             PixelFormat.TRANSLUCENT
         )
 
-        // Posición inicial (esquina superior izquierda)
+        // Posición inicial
         params.x = 100
         params.y = 300
 
