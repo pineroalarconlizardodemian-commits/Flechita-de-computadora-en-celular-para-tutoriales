@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tuusuario.miappflecha"
+    namespace = "com.tuusuario.miappflecha" // <--- ¡REVISA QUE ESTO ESTÉ AQUÍ!
     compileSdk = 34
 
     defaultConfig {
